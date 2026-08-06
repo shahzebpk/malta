@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Animated Burger Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #111;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        .menu-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .menu-item {
+            position: relative;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 20px;
+            overflow: hidden;
+            transition: flex 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Background Colors */
+        .item-1 { background-color: #264653; }
+        .item-2 { background-color: #2A9D8F; }
+        .item-3 { background-color: #E9C46A; }
+        .item-4 { background-color: #F4A261; }
+        .item-5 { background-color: #E76F51; }
+
+        /* Slanted layout using clip-path */
+        .menu-item:not(:last-child) {
+            clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%);
+            margin-right: -15%;
+            z-index: 1;
+        }
+
+        /* Active / Auto-expanded state class */
+        .menu-item.active {
+            flex: 1.8;
+            z-index: 10;
+        }
+
+        /* Content Styling */
+        .content {
+            text-align: left;
+            z-index: 2;
+            transform: translateY(0);
+            transition: transform 0.6s ease;
+        }
+
+        .menu-item.active .content {
+            transform: translateY(-5px);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .sub-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f3f3f3;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Burger Image Styling */
+        .burger-image-container {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%) scale(1);
+            width: 85%;
+            max-width: 320px;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .menu-item.active .burger-image-container {
+            transform: translateX(-50%) scale(1.12) translateY(-10px);
+        }
+
+        .burger-image-container img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3));
+        }
+
+        /* Price Styling */
+        .price {
+            z-index: 2;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            align-self: flex-start;
+            transform: scale(1);
+            transition: transform 0.6s ease;
+        }
+
+        .menu-item.active .price {
+            transform: scale(1.08);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                overflow: auto;
+                height: auto;
+            }
+            .menu-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .menu-item {
+                height: 400px;
+                clip-path: none !important;
+                margin-right: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-container">
+        <!-- Item 1: Burger 01 (Cheesy Beef Burger) -->
+        <div class="menu-item item-1 active">
+            <div class="content">
+                <h2>Cheesy</h2>
+                <div class="sub-title">Beef Burger</div>
+            </div>
+            <div class="burger-image-container">
+                <img src="Burger 01.png" alt="Cheesy Beef Burger">
+            </div>
+            <div class="price">€9.50</div>
+        </div>
+
+        <!-- Item 2: Burger 02 (Spicy Chicken Crunch Burger) -->
+        <div class="menu-item item-2">
+            <div class="content">
+                <span class="badge">SPICY</span>
+                <h2>Chicken</h2>
+                <div class="sub-title">Crunch Burger</div>
+            </div>
+            <div class="burger-image-container">
+                <img src="Burger 02.png" alt="Spicy Chicken Crunch Burger">
+            </div>
+            <div class="price">€7.50</div>
+        </div>
+
+        <!-- Item 3: Burger 03 (Tandoori Chicken Burger) -->
+        <div class="menu-item item-3">
+            <div class="content">
+                <h2>Tandoori</h2>
+                <div class="sub-title">Chicken Burger</div>
+            </div>
+            <div class="burger-image-container">
+                <img src="Burger 03.png" alt="Tandoori Chicken Burger">
+            </div>
+            <div class="price">€8.50</div>
+        </div>
+
+        <!-- Item 4: Burger 04 (Arabic Burger) -->
+        <div class="menu-item item-4">
+            <div class="content">
+                <h2>Arabic</h2>
+                <div class="sub-title">Burger</div>
+            </div>
+            <div class="burger-image-container">
+                <img src="Burger 04.png" alt="Arabic Burger">
+            </div>
+            <div class="price">€9.50</div>
+        </div>
+
+        <!-- Item 5: Burger 05 (Chicken Burger) -->
+        <div class="menu-item item-5">
+            <div class="content">
+                <h2>Chicken</h2>
+                <div class="sub-title">Burger</div>
+            </div>
+            <div class="burger-image-container">
+                <img src="Burger 05.png" alt="Chicken Burger">
+            </div>
+            <div class="price">€8.50</div>
+        </div>
+    </div>
+
+    <script>
+        // Automatic looping animation sequence
+        const items = document.querySelectorAll('.menu-item');
+        let currentIndex = 0;
+
+        function cycleMenu() {
+            items.forEach(item => item.classList.remove('active'));
+            items[currentIndex].classList.add('active');
+            currentIndex = (currentIndex + 1) % items.length;
+        }
+
+        // Run the transition automatically every 2.5 seconds
+        setInterval(cycleMenu, 2500);
+    </script>
+
+</body>
+</html>
