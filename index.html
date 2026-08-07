@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Animated Burger Menu with Fullscreen</title>
+    <title>AL Karam - Multi-Slide Animated Menu</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -36,12 +36,45 @@
             border-radius: 6px;
             cursor: pointer;
             backdrop-filter: blur(5px);
-            transition: background 0.3s, transform 0.2s;
+            transition: background 0.3s, transform 0.2s, opacity 0.3s;
         }
 
         .fullscreen-btn:hover {
             background: rgba(0, 0, 0, 0.8);
             transform: scale(1.05);
+        }
+
+        /* Utility class to hide the button completely in full screen */
+        .fullscreen-btn.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Slide Wrapper System */
+        .slide-deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .menu-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .menu-slide.active-slide {
+            opacity: 1;
+            visibility: visible;
+            z-index: 5;
         }
 
         .menu-container {
@@ -58,28 +91,39 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 40px 20px;
+            padding: 30px 15px;
             overflow: hidden;
             transition: flex 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Background Colors */
-        .item-1 { background-color: #264653; }
-        .item-2 { background-color: #2A9D8F; }
-        .item-3 { background-color: #E9C46A; }
-        .item-4 { background-color: #F4A261; }
-        .item-5 { background-color: #E76F51; }
+        /* Colors for Slide 1 (Burgers 1-5) */
+        .slide-1 .item-1 { background-color: #264653; }
+        .slide-1 .item-2 { background-color: #2A9D8F; }
+        .slide-1 .item-3 { background-color: #E9C46A; }
+        .slide-1 .item-4 { background-color: #F4A261; }
+        .slide-1 .item-5 { background-color: #E76F51; }
+
+        /* Colors for Slide 2 (Bowls 1-9) */
+        .slide-2 .item-1 { background-color: #1b4332; }
+        .slide-2 .item-2 { background-color: #2d6a4f; }
+        .slide-2 .item-3 { background-color: #40916c; }
+        .slide-2 .item-4 { background-color: #52b788; }
+        .slide-2 .item-5 { background-color: #38b000; }
+        .slide-2 .item-6 { background-color: #2b9348; }
+        .slide-2 .item-7 { background-color: #132a13; }
+        .slide-2 .item-8 { background-color: #31572c; }
+        .slide-2 .item-9 { background-color: #4f772d; }
 
         /* Slanted layout using clip-path */
         .menu-item:not(:last-child) {
             clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%);
-            margin-right: -15%;
+            margin-right: -8%;
             z-index: 1;
         }
 
         /* Active / Auto-expanded state class */
         .menu-item.active {
-            flex: 1.8;
+            flex: 2.2;
             z-index: 10;
         }
 
@@ -96,7 +140,7 @@
         }
 
         .badge {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 1px;
             background: rgba(0, 0, 0, 0.2);
@@ -108,7 +152,7 @@
         }
 
         h2 {
-            font-size: 2rem;
+            font-size: 1.3rem;
             font-weight: 900;
             color: #ffffff;
             line-height: 1.1;
@@ -116,38 +160,51 @@
         }
 
         .sub-title {
-            font-size: 1.1rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #f3f3f3;
-            margin-top: 5px;
+            margin-top: 4px;
             text-transform: uppercase;
         }
 
-        /* Burger Image Styling */
+        .ingredients {
+            font-size: 0.6rem;
+            color: #e2e8f0;
+            margin-top: 5px;
+            line-height: 1.3;
+            max-width: 160px;
+            display: none;
+        }
+
+        .menu-item.active .ingredients {
+            display: block;
+        }
+
+        /* Image Styling */
         .burger-image-container {
             position: absolute;
-            bottom: 15%;
+            bottom: 18%;
             left: 50%;
             transform: translateX(-50%) scale(1);
             width: 85%;
-            max-width: 320px;
+            max-width: 240px;
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .menu-item.active .burger-image-container {
-            transform: translateX(-50%) scale(1.12) translateY(-10px);
+            transform: translateX(-50%) scale(1.15) translateY(-10px);
         }
 
         .burger-image-container img {
             width: 100%;
             height: auto;
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
         }
 
         /* Price Styling */
         .price {
             z-index: 2;
-            font-size: 2.2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #fff;
             align-self: flex-start;
@@ -160,19 +217,33 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (max-width: 1200px) {
             body {
                 overflow: auto;
                 height: auto;
+            }
+            .slide-deck {
+                flex-direction: column;
+                height: auto;
+            }
+            .menu-slide {
+                position: relative;
+                opacity: 1;
+                visibility: visible;
+                height: auto;
+                margin-bottom: 40px;
             }
             .menu-container {
                 flex-direction: column;
                 height: auto;
             }
             .menu-item {
-                height: 400px;
+                height: 380px;
                 clip-path: none !important;
                 margin-right: 0 !important;
+            }
+            .ingredients {
+                display: block;
             }
         }
     </style>
@@ -182,83 +253,210 @@
     <!-- Fullscreen Toggle Button -->
     <button class="fullscreen-btn" id="fullscreenBtn">Full Screen</button>
 
-    <div class="menu-container">
-        <!-- Item 1: Burger 01 (Cheesy Beef Burger) -->
-        <div class="menu-item item-1 active">
-            <div class="content">
-                <h2>Cheesy</h2>
-                <div class="sub-title">Beef Burger</div>
+    <div class="slide-deck">
+        <!-- SLIDE 1: Burgers (5 Items) -->
+        <div class="menu-slide slide-1 active-slide" id="slide1">
+            <div class="menu-container">
+                <div class="menu-item item-1 active">
+                    <div class="content">
+                        <h2>Cheesy</h2>
+                        <div class="sub-title">Beef Burger</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="Burger 01.png" alt="Cheesy Beef Burger">
+                    </div>
+                    <div class="price">€9.50</div>
+                </div>
+
+                <div class="menu-item item-2">
+                    <div class="content">
+                        <span class="badge">SPICY</span>
+                        <h2>Chicken</h2>
+                        <div class="sub-title">Crunch Burger</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="Burger 02.png" alt="Spicy Chicken Crunch Burger">
+                    </div>
+                    <div class="price">€7.50</div>
+                </div>
+
+                <div class="menu-item item-3">
+                    <div class="content">
+                        <h2>Tandoori</h2>
+                        <div class="sub-title">Chicken Burger</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="Burger 03.png" alt="Tandoori Chicken Burger">
+                    </div>
+                    <div class="price">€8.50</div>
+                </div>
+
+                <div class="menu-item item-4">
+                    <div class="content">
+                        <h2>Arabic</h2>
+                        <div class="sub-title">Burger</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="Burger 04.png" alt="Arabic Burger">
+                    </div>
+                    <div class="price">€9.50</div>
+                </div>
+
+                <div class="menu-item item-5">
+                    <div class="content">
+                        <h2>Chicken</h2>
+                        <div class="sub-title">Burger</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="Burger 05.png" alt="Chicken Burger">
+                    </div>
+                    <div class="price">€8.50</div>
+                </div>
             </div>
-            <div class="burger-image-container">
-                <img src="Burger 01.png" alt="Cheesy Beef Burger">
-            </div>
-            <div class="price">€9.50</div>
         </div>
 
-        <!-- Item 2: Burger 02 (Spicy Chicken Crunch Burger) -->
-        <div class="menu-item item-2">
-            <div class="content">
-                <span class="badge">SPICY</span>
-                <h2>Chicken</h2>
-                <div class="sub-title">Crunch Burger</div>
-            </div>
-            <div class="burger-image-container">
-                <img src="Burger 02.png" alt="Spicy Chicken Crunch Burger">
-            </div>
-            <div class="price">€7.50</div>
-        </div>
+        <!-- SLIDE 2: Signature Bowls (9 Items, 1.png to 9.png) -->
+        <div class="menu-slide slide-2" id="slide2">
+            <div class="menu-container">
+                <div class="menu-item item-1 active">
+                    <div class="content">
+                        <h2>Teriyaki</h2>
+                        <div class="sub-title">Chicken Bowl</div>
+                        <div class="ingredients">Rice, red cabbage, carrot, broccoli, chicken slices, sesame seeds.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="1.png" alt="Teriyaki Chicken">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
 
-        <!-- Item 3: Burger 03 (Tandoori Chicken Burger) -->
-        <div class="menu-item item-3">
-            <div class="content">
-                <h2>Tandoori</h2>
-                <div class="sub-title">Chicken Burger</div>
-            </div>
-            <div class="burger-image-container">
-                <img src="Burger 03.png" alt="Tandoori Chicken Burger">
-            </div>
-            <div class="price">€8.50</div>
-        </div>
+                <div class="menu-item item-2">
+                    <div class="content">
+                        <h2>Beef</h2>
+                        <div class="sub-title">Taco Bowl</div>
+                        <div class="ingredients">Green capsicum, tomato, red kidney beans, sweet potato, avocado, sweet corn, carrot, minced beef, lemon.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="2.png" alt="Beef Taco">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
 
-        <!-- Item 4: Burger 04 (Arabic Burger) -->
-        <div class="menu-item item-4">
-            <div class="content">
-                <h2>Arabic</h2>
-                <div class="sub-title">Burger</div>
-            </div>
-            <div class="burger-image-container">
-                <img src="Burger 04.png" alt="Arabic Burger">
-            </div>
-            <div class="price">€9.50</div>
-        </div>
+                <div class="menu-item item-3">
+                    <div class="content">
+                        <h2>Salmon</h2>
+                        <div class="sub-title">Poke Bowl</div>
+                        <div class="ingredients">Rice, green edamame (soybeans), pumpkin.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="3.png" alt="Salmon Poke">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
 
-        <!-- Item 5: Burger 05 (Chicken Burger) -->
-        <div class="menu-item item-5">
-            <div class="content">
-                <h2>Chicken</h2>
-                <div class="sub-title">Burger</div>
+                <div class="menu-item item-4">
+                    <div class="content">
+                        <h2>Chipotle</h2>
+                        <div class="sub-title">Chicken Bowl</div>
+                        <div class="ingredients">Rice, tomato, green capsicum, red onion, grilled chicken, sweet potato, rocket leaves, red kidney.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="4.png" alt="Chipotle Chicken">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
+
+                <div class="menu-item item-5">
+                    <div class="content">
+                        <h2>Thai Peanut</h2>
+                        <div class="sub-title">Shrimp Bowl</div>
+                        <div class="ingredients">Red cabbage, carrot, noodles, sun-dried tomatoes, cucumber.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="5.png" alt="Thai Peanut Shrimp">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
+
+                <div class="menu-item item-6">
+                    <div class="content">
+                        <h2>BBQ Smoked</h2>
+                        <div class="sub-title">Beef Bowl</div>
+                        <div class="ingredients">Colelaw, brown soybeans, gherkins, sumac onion, wheat.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="6.png" alt="BBQ Smoked Beef Bowl">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
+
+                <div class="menu-item item-7">
+                    <div class="content">
+                        <h2>Greek</h2>
+                        <div class="sub-title">Turkey Bowl</div>
+                        <div class="ingredients">Lettuce, Greek yogurt, cucumber, cherry tomatoes, black olives, red onion, feta.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="7.png" alt="Greek Turkey">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
+
+                <div class="menu-item item-8">
+                    <div class="content">
+                        <h2>Vegan</h2>
+                        <div class="sub-title">Buddha Bowl</div>
+                        <div class="ingredients">Tofu, rocket leaves, red cabbage, carrot, cucumber, wheat, chickpeas.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="8.png" alt="Vegan Buddha">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
+
+                <div class="menu-item item-9">
+                    <div class="content">
+                        <h2>Mediterranean</h2>
+                        <div class="sub-title">Falafel Bowl</div>
+                        <div class="ingredients">Tomato, feta cheese, lettuce, red onion, olives, cucumber, hummus.</div>
+                    </div>
+                    <div class="burger-image-container">
+                        <img src="9.png" alt="Mediterranean Falafel Bowl">
+                    </div>
+                    <div class="price">€11.95</div>
+                </div>
             </div>
-            <div class="burger-image-container">
-                <img src="Burger 05.png" alt="Chicken Burger">
-            </div>
-            <div class="price">€8.50</div>
         </div>
     </div>
 
     <script>
-        // Automatic looping animation sequence
-        const items = document.querySelectorAll('.menu-item');
-        let currentIndex = 0;
+        const slides = document.querySelectorAll('.menu-slide');
+        let currentSlideIndex = 0;
+        let itemIndices = [0, 0]; // Tracks current active item index per slide
 
-        function cycleMenu() {
-            items.forEach(item => item.classList.remove('active'));
-            items[currentIndex].classList.add('active');
-            currentIndex = (currentIndex + 1) % items.length;
+        function runMenuAnimation() {
+            const activeSlide = slides[currentSlideIndex];
+            const currentSlideItems = activeSlide.querySelectorAll('.menu-item');
+            
+            let itemIdx = itemIndices[currentSlideIndex];
+
+            currentSlideItems.forEach(el => el.classList.remove('active'));
+            currentSlideItems[itemIdx].classList.add('active');
+
+            itemIndices[currentSlideIndex]++;
+
+            if (itemIndices[currentSlideIndex] >= currentSlideItems.length) {
+                itemIndices[currentSlideIndex] = 0; 
+                
+                slides[currentSlideIndex].classList.remove('active-slide');
+                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                slides[currentSlideIndex].classList.add('active-slide');
+            }
         }
 
-        setInterval(cycleMenu, 2500);
+        setInterval(runMenuAnimation, 2500);
 
-        // Fullscreen Toggle Functionality
+        // Fullscreen Toggle Functionality with Auto-Hiding Button
         const fullscreenBtn = document.getElementById('fullscreenBtn');
 
         fullscreenBtn.addEventListener('click', () => {
@@ -266,21 +464,21 @@
                 document.documentElement.requestFullscreen().catch(err => {
                     alert(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
                 });
-                fullscreenBtn.textContent = 'Exit Full Screen';
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
-                fullscreenBtn.textContent = 'Full Screen';
             }
         });
 
-        // Update button text if user exits fullscreen via keyboard (e.g., ESC)
+        // Listen for fullscreen changes (handles both button click and ESC key press)
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
-                fullscreenBtn.textContent = 'Full Screen';
+                // Exit fullscreen: Show the button again
+                fullscreenBtn.classList.remove('hidden');
             } else {
-                fullscreenBtn.textContent = 'Exit Full Screen';
+                // Enter fullscreen: Hide the button completely
+                fullscreenBtn.classList.add('hidden');
             }
         });
     </script>
