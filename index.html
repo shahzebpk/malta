@@ -44,7 +44,6 @@
             transform: scale(1.05);
         }
 
-        /* Utility class to hide the button completely in full screen */
         .fullscreen-btn.hidden {
             opacity: 0;
             pointer-events: none;
@@ -114,14 +113,13 @@
         .slide-2 .item-8 { background-color: #31572c; }
         .slide-2 .item-9 { background-color: #4f772d; }
 
-        /* Slanted layout using clip-path */
+        /* Slanted layout using clip-path with a deeper negative margin overlap to completely eliminate gaps */
         .menu-item:not(:last-child) {
             clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%);
-            margin-right: -8%;
+            margin-right: -15%;
             z-index: 1;
         }
 
-        /* Active / Auto-expanded state class */
         .menu-item.active {
             flex: 2.2;
             z-index: 10;
@@ -471,13 +469,10 @@
             }
         });
 
-        // Listen for fullscreen changes (handles both button click and ESC key press)
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
-                // Exit fullscreen: Show the button again
                 fullscreenBtn.classList.remove('hidden');
             } else {
-                // Enter fullscreen: Hide the button completely
                 fullscreenBtn.classList.add('hidden');
             }
         });
